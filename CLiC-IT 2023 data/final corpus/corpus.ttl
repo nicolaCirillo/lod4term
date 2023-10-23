@@ -1,0 +1,285 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> .
+@prefix nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .
+@prefix powla: <http://purl.org/powla/powla.owl#> .
+@prefix terms: <http://example.com/terms#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.com/corpus> a nif:ContextCollection ;
+    nif:hasContext <https://example.com/corpus/doc1> ;
+    dcterms:conformsTo <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core/2.1> .
+
+terms:term1_3 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_50_59> ;
+    powla:string "consiglio" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1>,
+        <https://example.com/annotators/annot2> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_consiglio> .
+
+terms:term1_7 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_105_112> ;
+    powla:string "rifiuti" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_rifiuto> .
+
+terms:term1_9 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_158_167> ;
+    powla:string "direttiva" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_direttiva> .
+
+terms:term1_2 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_25_35>,
+        <https://example.com/corpus/doc1#offset_36_43> ;
+    powla:string "parlamento europeo" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1>,
+        <https://example.com/annotators/annot2> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_parlamento_europeo> .
+
+terms:term1_8 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_119_128>,
+        <https://example.com/corpus/doc1#offset_129_139> ;
+    powla:string "industrie estrattive" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_industria_estrattiva> .
+
+<https://example.com/corpus/doc1#offset_158_167> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "direttiva" ;
+    nif:beginIndex "158"^^xsd:nonNegativeInteger ;
+    nif:endIndex "167"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_9 ;
+    powla:previous <https://example.com/corpus/doc1#offset_129_139> .
+
+terms:term1_5 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_101_104>,
+        <https://example.com/corpus/doc1#offset_105_112>,
+        <https://example.com/corpus/doc1#offset_92_100> ;
+    powla:string "gestione dei rifiuti" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_gestione_dei_rifiuti> .
+
+<https://example.com/corpus/doc1#offset_0_9> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "Direttiva" ;
+    nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+    nif:endIndex "9"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_1,
+        terms:term1_10 ;
+    powla:next <https://example.com/corpus/doc1#offset_21_24> .
+
+<https://example.com/corpus/doc1#offset_21_24> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "del" ;
+    nif:beginIndex "21"^^xsd:nonNegativeInteger ;
+    nif:endIndex "24"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_10 ;
+    powla:next <https://example.com/corpus/doc1#offset_25_35> ;
+    powla:previous <https://example.com/corpus/doc1#offset_0_9> .
+
+<https://example.com/corpus/doc1#offset_44_45> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "e" ;
+    nif:beginIndex "44"^^xsd:nonNegativeInteger ;
+    nif:endIndex "45"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_10 ;
+    powla:next <https://example.com/corpus/doc1#offset_46_49> ;
+    powla:previous <https://example.com/corpus/doc1#offset_36_43> .
+
+<https://example.com/corpus/doc1#offset_46_49> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "del" ;
+    nif:beginIndex "46"^^xsd:nonNegativeInteger ;
+    nif:endIndex "49"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_10 ;
+    powla:next <https://example.com/corpus/doc1#offset_50_59> ;
+    powla:previous <https://example.com/corpus/doc1#offset_44_45> .
+
+terms:term1_1 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_0_9>,
+        <https://example.com/corpus/doc1#offset_101_104>,
+        <https://example.com/corpus/doc1#offset_105_112>,
+        <https://example.com/corpus/doc1#offset_92_100> ;
+    powla:string "direttiva",
+        "gestione dei rifiuti" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1>,
+        <https://example.com/annotators/annot2> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_direttiva>,
+        <https://example.com/termbase/sense_gestione_dei_rifiuti> .
+
+terms:term1_6 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_105_112>,
+        <https://example.com/corpus/doc1#offset_113_118>,
+        <https://example.com/corpus/doc1#offset_119_128>,
+        <https://example.com/corpus/doc1#offset_129_139> ;
+    powla:string "rifiuti delle industrie estrattive" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_rifiuto_delle_industrie_estrattive> .
+
+<https://example.com/corpus/doc1#offset_113_118> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "delle" ;
+    nif:beginIndex "113"^^xsd:nonNegativeInteger ;
+    nif:endIndex "118"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_4,
+        terms:term1_6 ;
+    powla:next <https://example.com/corpus/doc1#offset_119_128> ;
+    powla:previous <https://example.com/corpus/doc1#offset_105_112> .
+
+<https://example.com/corpus/doc1#offset_25_35> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "Parlamento" ;
+    nif:beginIndex "25"^^xsd:nonNegativeInteger ;
+    nif:endIndex "35"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_10,
+        terms:term1_2 ;
+    powla:next <https://example.com/corpus/doc1#offset_36_43> ;
+    powla:previous <https://example.com/corpus/doc1#offset_21_24> .
+
+<https://example.com/corpus/doc1#offset_101_104> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "dei" ;
+    nif:beginIndex "101"^^xsd:nonNegativeInteger ;
+    nif:endIndex "104"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_1,
+        terms:term1_4,
+        terms:term1_5 ;
+    powla:next <https://example.com/corpus/doc1#offset_105_112> ;
+    powla:previous <https://example.com/corpus/doc1#offset_92_100> .
+
+<https://example.com/corpus/doc1#offset_119_128> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "industrie" ;
+    nif:beginIndex "119"^^xsd:nonNegativeInteger ;
+    nif:endIndex "128"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_4,
+        terms:term1_6,
+        terms:term1_8 ;
+    powla:next <https://example.com/corpus/doc1#offset_129_139> ;
+    powla:previous <https://example.com/corpus/doc1#offset_113_118> .
+
+<https://example.com/corpus/doc1#offset_129_139> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "estrattive" ;
+    nif:beginIndex "129"^^xsd:nonNegativeInteger ;
+    nif:endIndex "139"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_4,
+        terms:term1_6,
+        terms:term1_8 ;
+    powla:next <https://example.com/corpus/doc1#offset_158_167> ;
+    powla:previous <https://example.com/corpus/doc1#offset_119_128> .
+
+<https://example.com/corpus/doc1#offset_36_43> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "europeo" ;
+    nif:beginIndex "36"^^xsd:nonNegativeInteger ;
+    nif:endIndex "43"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_10,
+        terms:term1_2 ;
+    powla:next <https://example.com/corpus/doc1#offset_44_45>,
+        <https://example.com/corpus/doc1#offset_50_59> ;
+    powla:previous <https://example.com/corpus/doc1#offset_25_35> .
+
+<https://example.com/corpus/doc1#offset_50_59> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "Consiglio" ;
+    nif:beginIndex "50"^^xsd:nonNegativeInteger ;
+    nif:endIndex "59"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_10,
+        terms:term1_3 ;
+    powla:next <https://example.com/corpus/doc1#offset_92_100> ;
+    powla:previous <https://example.com/corpus/doc1#offset_36_43>,
+        <https://example.com/corpus/doc1#offset_46_49> .
+
+<https://example.com/corpus/doc1#offset_92_100> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "gestione" ;
+    nif:beginIndex "92"^^xsd:nonNegativeInteger ;
+    nif:endIndex "100"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_1,
+        terms:term1_4,
+        terms:term1_5 ;
+    powla:next <https://example.com/corpus/doc1#offset_101_104> ;
+    powla:previous <https://example.com/corpus/doc1#offset_50_59> .
+
+terms:term1_4 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_101_104>,
+        <https://example.com/corpus/doc1#offset_105_112>,
+        <https://example.com/corpus/doc1#offset_113_118>,
+        <https://example.com/corpus/doc1#offset_119_128>,
+        <https://example.com/corpus/doc1#offset_129_139>,
+        <https://example.com/corpus/doc1#offset_92_100> ;
+    powla:string "gestione dei rifiuti delle industrie estrattive" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1>,
+        <https://example.com/annotators/annot2> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_gestione_dei_rifiuti_delle_industrie_estrattive> .
+
+terms:term1_10 a powla:Node ;
+    powla:hasChild <https://example.com/corpus/doc1#offset_0_9>,
+        <https://example.com/corpus/doc1#offset_21_24>,
+        <https://example.com/corpus/doc1#offset_25_35>,
+        <https://example.com/corpus/doc1#offset_36_43>,
+        <https://example.com/corpus/doc1#offset_44_45>,
+        <https://example.com/corpus/doc1#offset_46_49>,
+        <https://example.com/corpus/doc1#offset_50_59> ;
+    powla:string "direttiva del parlamento europeo e del consiglio" ;
+    itsrdf:term "yes" ;
+    itsrdf:termAnnotatorsRef <https://example.com/annotators/annot1> ;
+    itsrdf:termInfoRef <https://example.com/termbase/sense_direttiva_del_parlamento_europeo_e_del_consiglio> .
+
+<https://example.com/corpus/doc1#offset_105_112> a nif:OffsetBasedString,
+        nif:Phrase,
+        powla:Node ;
+    nif:anchorOf "rifiuti" ;
+    nif:beginIndex "105"^^xsd:nonNegativeInteger ;
+    nif:endIndex "112"^^xsd:nonNegativeInteger ;
+    nif:referenceContext <https://example.com/corpus/doc1> ;
+    powla:hasParent terms:term1_1,
+        terms:term1_4,
+        terms:term1_5,
+        terms:term1_6,
+        terms:term1_7 ;
+    powla:next <https://example.com/corpus/doc1#offset_113_118> ;
+    powla:previous <https://example.com/corpus/doc1#offset_101_104> .
+
+<https://example.com/corpus/doc1> a nif:Context,
+        nif:OffsetBasedString ;
+    nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+    nif:endIndex "178"^^xsd:nonNegativeInteger ;
+    nif:isString "Direttiva 2006/21/CE del Parlamento europeo e del Consiglio del 15 marzo 2006 relativa alla gestione dei rifiuti delle industrie estrattive e che modifica la direttiva 2004/35/CE" .
+
