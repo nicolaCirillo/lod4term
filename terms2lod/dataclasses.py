@@ -1,9 +1,9 @@
-from __future__ import annotations
 from dataclasses import dataclass, field, InitVar
-from rdflib import Graph, Literal, RDF, RDFS, URIRef, Namespace
-from rdflib.namespace import NamespaceManager
+from typing import ClassVar
+from rdflib import Graph, Literal, RDF, RDFS, URIRef, XSD, Namespace
 
 
+#Namespaces for the termbase
 ONTOLEX = Namespace("http://www.w3.org/ns/lemon/ontolex#")
 LEXINFO = Namespace("http://www.lexinfo.net/ontology/2.0/lexinfo#")
 DECOMP = Namespace("http://www.w3.org/ns/lemon/decomp#")
@@ -11,6 +11,11 @@ DCT = Namespace("http://purl.org/dc/terms/")
 DBC = Namespace("https://dbpedia.org/page/Category:")
 LIME = Namespace("http://www.w3.org/ns/lemon/lime#")
 
+#Namespaces for the corpus
+DCTERMS = Namespace("http://purl.org/dc/terms/")
+ITSRDF = Namespace("http://www.w3.org/2005/11/its/rdf#")
+NIF = Namespace("http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#")
+POWLA = Namespace("http://purl.org/powla/powla.owl#")
 
 LANG = "it"
 POS_DICT = {
@@ -42,6 +47,11 @@ def initGraph():
     g.bind("decomp", DECOMP)
     g.bind("dbc", DBC)
     g.bind("lime", LIME)
+    g.bind("dcterms", DCTERMS)
+    g.bind("itsrdf", ITSRDF)
+    g.bind("nif", NIF)
+    g.bind("powla", POWLA)
+    
     return g
 
 @dataclass
@@ -55,8 +65,8 @@ class Entity():
     def serialize(self):
         g = initGraph()
         return g
-        
 
+#Dataclasses for the termbase    
 @dataclass
 class Form(Entity):
     writtenRep: str
@@ -157,6 +167,18 @@ class Word(LexicalEntry):
         return g
 
 @dataclass
+class Component(Entity):
+    correspondsTo: LexicalEntry = None
+
+    def serialize(self):
+        this, g = self.uri, super().serialize()
+        g.add((this, RDF.type, DECOMP.Component))
+        if self.correspondsTo:
+            g.add((this, DECOMP.correspondsTo, self.correspondsTo.uri))
+            g += self.correspondsTo.serialize()
+        return g
+
+@dataclass
 class MultiwordExpression(LexicalEntry):
     subterms: list[str] = field(default_factory=list)
     constituents: list[Component] = field(default_factory=list)
@@ -172,18 +194,7 @@ class MultiwordExpression(LexicalEntry):
             g.add((this, getattr(RDF, "_{}".format(i+1)), c.uri))
             g += c.serialize()
         return g
-    
-@dataclass
-class Component(Entity):
-    correspondsTo: LexicalEntry = None
 
-    def serialize(self):
-        this, g = self.uri, super().serialize()
-        g.add((this, RDF.type, DECOMP.Component))
-        if self.correspondsTo:
-            g.add((this, DECOMP.correspondsTo, self.correspondsTo.uri))
-            g += self.correspondsTo.serialize()
-        return g
 
 @dataclass
 class Lexicon(Entity):
@@ -199,3 +210,163 @@ class Lexicon(Entity):
         g.add((this, LIME.language, Literal(self.language)))
         g.add((this, LIME.lexicalEntries, Literal(len(self.entries))))
         return g
+
+#dataclasses for the corpus
+
+@dataclass
+class NIFContext(Entity):
+    isString_str: InitVar[str]
+    isString: Literal = field(init=False)
+    beginIndex: Literal = field(init=False)
+    endIndex: Literal =  field(init=False)
+
+    
+    def __post_init__(self, uri_str, isString_str):
+        super().__post_init__(uri_str)
+        end = len(isString_str)-1
+        self.beginIndex = Literal(0, datatype=XSD.nonNegativeInteger)
+        self.endIndex = Literal(end, datatype=XSD.nonNegativeInteger)
+        self.isString = Literal(isString_str)
+
+    def serialize(self):
+        this, g = self.uri, super().serialize()
+        g.add((this, RDF.type, NIF.Context))
+        g.add((this, RDF.type, NIF.OffsetBasedString))
+        g.add((this, NIF.beginIndex, self.beginIndex))
+        g.add((this, NIF.endIndex, self.endIndex))
+        g.add((this, NIF.isString, self.isString))
+        return g
+    
+@dataclass
+class POWLANode(Entity):
+    next: URIRef = field(init=False, default=None)
+    previous: URIRef = field(init=False, default=None)
+    hasParent: URIRef = field(init=False, default=None)
+    string: URIRef = field(init=False, default=None)
+    hasChildren: list = field(init=False, default_factory=list)
+
+    def __post_init__(self, uri_str):
+        super().__post_init__(uri_str)
+        for i, child in enumerate(self.hasChildren):
+            if i>0:
+                child.previous = self.hasChildren[i-1].uri
+            if i<len(self.hasChildren)-1:
+                child.next =self.hasChildren[i+1].uri
+            child.hasParent = self.uri
+
+    def serialize(self):
+        this, g = self.uri, super().serialize()
+        g.add((this, RDF.type, POWLA.Node))
+        if self.next:
+            g.add((this, POWLA.next, self.next))
+        if self.previous:
+            g.add((this, POWLA.previous, self.previous))
+        if self.hasParent:
+            g.add((this, POWLA.hasParent, self.hasParent))
+        if self.string:
+            g.add((this, POWLA.string, self.string))
+        for child in self.hasChildren:
+            g.add((this, POWLA.hasChildren, child.uri))
+            g += child.serialize()
+        return g
+
+@dataclass
+class NIFPhrase(POWLANode):
+    uri_str: ClassVar = None
+    begin: InitVar[int]
+    end: InitVar[int]
+    referenceContext: NIFContext
+    beginIndex: Literal = field(init=False)
+    endIndex: Literal =  field(init=False)
+    anchorOf: Literal =  field(init=False)
+
+    def __post_init__(self, begin, end):
+        uri_str = self.referenceContext.uri.toPython()
+        uri_str += f'#offset_{begin}_{end}'
+        super().__post_init__(uri_str)
+        
+        self.beginIndex = Literal(begin, datatype=XSD.nonNegativeInteger)
+        self.endIndex = Literal(end, datatype=XSD.nonNegativeInteger)
+        string = self.referenceContext.isString.toPython()[begin: end]
+        self.anchorOf = Literal(string)
+        self.string = Literal(string)
+
+    def serialize(self):
+        this, g = self.uri, super().serialize()
+        g.add((this, RDF.type, NIF.OffsetBasedString))
+        g.add((this, RDF.type, NIF.Phrase))
+        g.add((this, RDF.type, POWLA.Node))
+        g.add((this, NIF.beginIndex, self.beginIndex))
+        g.add((this, NIF.endIndex, self.endIndex))
+        g.add((this, NIF.referenceContext, self.referenceContext.uri))
+        g.add((this, NIF.anchorOf, self.anchorOf))
+        g += self.referenceContext.serialize()
+        return g
+    
+@dataclass    
+class POWLATerm(POWLANode):
+    termAnnotatorsRef_str: InitVar[str]
+    termInfoRef_str: InitVar[str]
+    termAnnotatorsRef: URIRef = field(init=False)
+    termInfoRef: URIRef = field(init=False)
+    children: InitVar[list[POWLANode]]
+
+    def __post_init__(self, uri_str, termAnnotatorsRef_str, termInfoRef_str, children):
+        self.hasChildren = children
+        super().__post_init__(uri_str)
+        self.termAnnotatorsRef = URIRef(termAnnotatorsRef_str)
+        self.termInfoRef = URIRef(termInfoRef_str)
+        string = " ".join([c.anchorOf.toPython() for c in self.hasChildren])
+        self.string = Literal(string)
+
+    def serialize(self):
+        this, g = self.uri, super().serialize()
+        g.add((this, ITSRDF['term'], Literal("yes")))
+        g.add((this, ITSRDF.termAnnotatorsRef, self.termAnnotatorsRef))
+        g.add((this, ITSRDF.termInfoRef, self.termInfoRef))
+        return g
+
+@dataclass 
+class POWLATermCollection(POWLANode):
+    children: InitVar[list[POWLANode]]
+    
+    def __post_init__(self, uri_str, children):
+        self.hasChildren = children
+        super().__post_init__(uri_str)
+
+#Dataclasses for reading jsonl files produced by doccano
+from dataclasses import dataclass, field
+
+@dataclass
+class Document:
+    identifier: int
+    string: str
+
+@dataclass
+class Phrase:
+    identifier: int
+    begin: int
+    end: int
+    string: str = field(init=False)
+    label: str
+    context: Document = field(repr=False)
+
+    def __post_init__(self):
+        self.string = self.context.string[self.begin: self.end]
+
+@dataclass
+class Annotation:
+    identifier: int
+    string: str = field(init=False)
+    label: str  = field(init=False)
+    begin: str = field(init=False)
+    end: str  = field(init=False)
+    text: Document = field(repr=False)
+    phrases: list[Phrase] = field(repr=False)
+ 
+    def __post_init__(self):
+        self.phrases = sorted(self.phrases, key=lambda x: x.begin)
+        self.string = ' '.join([p.string for p in self.phrases])
+        self.label = self.phrases[0].label
+        self.begin = self.phrases[0].begin
+        self.end = self.phrases[0].end
